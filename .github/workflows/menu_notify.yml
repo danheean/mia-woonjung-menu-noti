@@ -1,0 +1,31 @@
+name: 학식 메뉴 알림
+
+on:
+  schedule:
+    # 평일 오전 8시 KST (KST = UTC+9; 월~금 08:00 KST = 일~목 23:00 UTC)
+    - cron: "0 23 * * 0-4"
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run menu notification
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          MENU_URL: ${{ vars.MENU_URL }}
+        run: python -m src.main
