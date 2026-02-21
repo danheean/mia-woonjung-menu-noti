@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>이번 주 식단표 - 운정교내식당</title>
+
+  <meta property="og:title" content="🍱 이번 주 운정교내식당 식단표" />
+  <meta property="og:description" content="이번 주 월~금 식단을 확인하세요" />
+  <meta property="og:url" content="{{ base_url }}/weekly" />
+
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="site-header">🍱 운정교내식당 — 주간 식단표</header>
+
+  <div class="week-section">
+    {% for day, info in week_data.items() %}
+    {% set is_today = info.date == today %}
+    <div class="week-day-card">
+      <div class="week-day-header {% if is_today %}today{% elif info.is_holiday %}holiday{% endif %}">
+        {{ day }}요일 ({{ info.date }})
+        {% if is_today %} — 오늘{% endif %}
+      </div>
+      <div class="week-day-body">
+        {% if info.is_holiday %}
+        <p class="week-holiday-msg">🍽️ 휴무</p>
+        {% elif info.menu %}
+        <ul class="week-menu-list">
+          {% for item in info.menu %}
+          <li>{{ item }}</li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p class="week-error-msg">메뉴 정보 없음</p>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <a href="/" class="back-link">← 오늘의 메뉴로 돌아가기</a>
+</body>
+</html>

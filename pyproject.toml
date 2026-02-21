@@ -1,0 +1,13 @@
+[project]
+name = "mia-menu-notice"
+version = "0.1.0"
+requires-python = ">=3.10"
+dependencies = [
+    "flask",
+    "requests",
+    "beautifulsoup4",
+    "pillow",
+    "holidays",
+    "python-dotenv",
+    "apscheduler>=3.11.2",
+]

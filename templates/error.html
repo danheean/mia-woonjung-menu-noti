@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>메뉴를 불러올 수 없습니다</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="site-header">🍱 운정교내식당</header>
+
+  <div class="card error-card">
+    <span class="error-icon">😓</span>
+    <p class="error-title">메뉴를 불러올 수 없습니다</p>
+    <p class="date-heading" style="margin-top:12px; font-size:18px;">{{ date_display }}</p>
+    <p class="error-msg" style="margin-top:16px;">
+      학교 웹사이트에서 메뉴를 가져오지 못했습니다.<br />
+      잠시 후 다시 시도해주세요.
+    </p>
+  </div>
+
+  <a href="/" class="back-link" style="display:block; text-align:center; margin-top:20px;">
+    다시 시도 →
+  </a>
+</body>
+</html>

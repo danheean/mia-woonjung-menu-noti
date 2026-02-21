@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>오늘의 구내식당 메뉴</title>
+
+  <!-- OG 메타태그 -->
+  <meta property="og:type" content="website" />
+  {% if is_holiday %}
+  <meta property="og:title" content="🍽️ 오늘은 쉽니다 - {{ date_display }}" />
+  <meta property="og:description" content="오늘은 휴무입니다." />
+  {% else %}
+  <meta property="og:title" content="🍱 오늘의 구내식당 메뉴 - {{ date_display }}" />
+  <meta property="og:description" content="{{ menu_preview }}" />
+  {% endif %}
+  <meta property="og:image" content="{{ base_url }}/og-image/{{ date_str }}.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:url" content="{{ base_url }}/?d={{ date_str }}" />
+
+  <!-- 카카오톡 -->
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="site-header">🍱 운정교내식당</header>
+
+  {% if is_holiday %}
+  <div class="card holiday-card">
+    <span class="holiday-icon">🍽️</span>
+    <p class="holiday-text">오늘은 쉽니다</p>
+    <p class="date-heading" style="margin-top:12px;">{{ date_display }}</p>
+    <p class="holiday-sub" style="margin-top:8px;">주말 또는 공휴일입니다</p>
+  </div>
+
+  {% elif is_not_available %}
+  <div class="card holiday-card">
+    <span class="holiday-icon">📭</span>
+    <p class="holiday-text">메뉴 정보 없음</p>
+    <p class="date-heading" style="margin-top:12px;">{{ date_display }}</p>
+    <p class="holiday-sub" style="margin-top:8px;">아직 메뉴가 등록되지 않았습니다</p>
+  </div>
+
+  {% else %}
+  <div class="card">
+    <p class="date-heading">{{ date_display }}</p>
+    <p class="date-sub">오늘의 메뉴</p>
+    <ul class="menu-list">
+      {% for item in menu_items %}
+      <li>{{ item }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <a href="/weekly" class="btn-weekly">이번 주 전체 메뉴 보기 →</a>
+  {% endif %}
+</body>
+</html>
