@@ -71,7 +71,7 @@ def _get_menu(target_date: date) -> list[str] | str | None:
 
 
 def _get_base_url() -> str:
-    base = os.getenv("BASE_URL", "")
+    base = os.getenv("BASE_URL", "").split("#")[0].strip()
     if not base:
         base = request.host_url.rstrip("/")
     return base
