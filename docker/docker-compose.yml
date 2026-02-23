@@ -1,0 +1,27 @@
+services:
+  wjmenu:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    restart: unless-stopped
+    expose:
+      - "5005"
+    volumes:
+      - ../logs:/app/logs
+      - ../cache:/app/cache
+      - ../static/fonts:/app/static/fonts
+    env_file:
+      - ../.env
+    networks:
+      - traefik-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.wjmenu.rule=Host(`wjmenu.repia.com`)"
+      - "traefik.http.routers.wjmenu.entrypoints=websecure"
+      - "traefik.http.routers.wjmenu.tls=true"
+      - "traefik.http.routers.wjmenu.tls.certresolver=letsencrypt"
+      - "traefik.http.services.wjmenu.loadbalancer.server.port=5005"
+
+networks:
+  traefik-network:
+    external: true
