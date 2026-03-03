@@ -17,6 +17,13 @@ CAFETERIA_KEYWORD = os.getenv("CAFETERIA_KEYWORD", "운정교내식당")
 
 WEEKDAY_MAP = {0: "월", 1: "화", 2: "수", 3: "목", 4: "금"}
 
+_last_post_url: str | None = None
+
+
+def get_last_post_url() -> str | None:
+    """마지막으로 성공적으로 찾은 게시물 URL 반환."""
+    return _last_post_url
+
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -186,8 +193,13 @@ def get_menu_for_date(target_date: date) -> list[str] | None:
     if not post_url:
         return None
 
+    global _last_post_url
+    _last_post_url = post_url
+    import cache as _cache
+    _cache.save_post_url_cache(post_url)
     logger.info(f"게시물 URL: {post_url}")
-    weekly = parse_weekly_table(post_url, session, ref_year=target_date.year)
+    from crawler_graph import run_crawl_graph
+    weekly = run_crawl_graph(post_url, session, ref_year=target_date.year)
     if not weekly:
         return None
 

@@ -37,6 +37,13 @@ body {
   font-weight: 600;
   letter-spacing: -0.3px;
 }
+.site-header a {
+  color: inherit;
+  text-decoration: none;
+}
+.site-header a:hover {
+  text-decoration: underline;
+}
 
 /* Card */
 .card {

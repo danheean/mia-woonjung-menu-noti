@@ -70,6 +70,11 @@ def _get_menu(target_date: date) -> list[str] | str | None:
     return menu
 
 
+def _get_post_url() -> str | None:
+    """현재 주간 게시물 URL 반환 (메모리 → 파일 캐시 순으로 조회)."""
+    return crawler.get_last_post_url() or cache.get_post_url_cache()
+
+
 def _get_base_url() -> str:
     base = os.getenv("BASE_URL", "").split("#")[0].strip()
     if not base:
@@ -98,6 +103,7 @@ def index():
             date_str=date_str,
             date_display=date_display,
             menu_items=[],
+            post_url=_get_post_url(),
             base_url=_get_base_url(),
         )
 
@@ -111,6 +117,7 @@ def index():
             date_str=date_str,
             date_display=date_display,
             menu_items=[],
+            post_url=_get_post_url(),
             base_url=_get_base_url(),
         )
 
@@ -121,6 +128,7 @@ def index():
             date_str=date_str,
             date_display=date_display,
             menu_items=[],
+            post_url=_get_post_url(),
             base_url=_get_base_url(),
         )
 
@@ -132,6 +140,7 @@ def index():
         date_display=date_display,
         menu_items=menu,
         menu_preview=menu_preview,
+        post_url=_get_post_url(),
         base_url=_get_base_url(),
     )
 
@@ -163,6 +172,7 @@ def weekly():
         "weekly.html",
         week_data=week_data,
         today=today.isoformat(),
+        post_url=_get_post_url(),
         base_url=_get_base_url(),
     )
 

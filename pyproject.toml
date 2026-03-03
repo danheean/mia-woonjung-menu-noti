@@ -10,4 +10,6 @@ dependencies = [
     "holidays",
     "python-dotenv",
     "apscheduler>=3.11.2",
+    "langgraph",
+    "google-genai",
 ]

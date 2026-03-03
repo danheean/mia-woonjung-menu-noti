@@ -45,6 +45,29 @@ def get_og_cache_path(date_str: str) -> Path | None:
     return path if path.exists() else None
 
 
+POST_URL_CACHE = Path("cache/post_url.txt")
+
+
+def get_post_url_cache() -> str | None:
+    """캐시된 게시물 URL 반환."""
+    _ensure_dirs()
+    if not POST_URL_CACHE.exists():
+        return None
+    try:
+        return POST_URL_CACHE.read_text(encoding="utf-8").strip() or None
+    except Exception:
+        return None
+
+
+def save_post_url_cache(url: str) -> None:
+    """게시물 URL 캐시 저장."""
+    _ensure_dirs()
+    try:
+        POST_URL_CACHE.write_text(url, encoding="utf-8")
+    except Exception as e:
+        logger.warning(f"post_url 캐시 저장 실패: {e}")
+
+
 def save_og_cache(date_str: str, image_bytes: bytes) -> None:
     """OG 이미지 캐시 저장."""
     _ensure_dirs()

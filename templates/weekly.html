@@ -12,7 +12,7 @@
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
-  <header class="site-header">🍱 운정교내식당 — 주간 식단표</header>
+  <header class="site-header">🍱 <a href="{{ post_url or 'https://www.sungshin.ac.kr/main_kor/11095/subview.do' }}" target="_blank" rel="noopener">운정교내식당</a> — 주간 식단표</header>
 
   <div class="week-section">
     {% for day, info in week_data.items() %}
