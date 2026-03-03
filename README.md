@@ -14,6 +14,8 @@
 
 게시물 형식(HTML 테이블 vs 이미지)에 따라 파싱 경로를 자동으로 분기합니다.
 
+![LangGraph Flow](docs/langgraph_flow.png)
+
 ```
             ┌─────────────────────────┐
             │      입력: post_url      │
