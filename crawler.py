@@ -214,6 +214,9 @@ def get_menu_for_date(target_date: date) -> list[str] | None:
         if menu is not None:
             return menu or None
         logger.info(f"{post_url} 에서 {target_date} 미발견 (게시물 날짜: {sorted(weekly.keys())}), 다음 게시물 시도")
+        if max(weekly.keys()) < target_date:
+            logger.info(f"게시물 최신 날짜({max(weekly.keys())})가 {target_date}보다 과거 — 탐색 종료")
+            break
 
     logger.warning(f"{target_date} 날짜 메뉴를 모든 게시물에서 찾지 못함. 이번 주 게시물 미게시 가능성.")
     return None
