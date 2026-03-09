@@ -58,6 +58,33 @@
        └────────────────────────┘
 ```
 
+## 서비스 URL
+
+| URL | 설명 |
+|-----|------|
+| `/` | 오늘 메뉴 |
+| `/?d=YYYY-MM-DD` | 특정 날짜 메뉴 |
+| `/weekly` | 이번 주 메뉴 전체 |
+| `/og-image/YYYY-MM-DD.png` | 카카오톡 공유용 OG 이미지 |
+
+### 예시
+
+```
+# 오늘 메뉴
+https://wjmenu.repia.com/
+
+# 특정 날짜 메뉴 (2026년 3월 9일)
+https://wjmenu.repia.com/?d=2026-03-09
+
+# 이번 주 메뉴
+https://wjmenu.repia.com/weekly
+
+# OG 이미지 (PNG)
+https://wjmenu.repia.com/og-image/2026-03-09.png
+```
+
+> 로컬에서는 `http://localhost:5005` 로 치환해서 사용합니다.
+
 ## 로컬 실행
 
 ```bash
