@@ -56,26 +56,31 @@ def _get(session: requests.Session, url: str) -> requests.Response | None:
     return None
 
 
-def get_weekly_post_url(session: requests.Session) -> str | None:
-    """목록 페이지에서 운정교내식당 게시물 URL 추출."""
+def _get_all_post_urls(session: requests.Session) -> list[str]:
+    """목록 페이지에서 키워드 포함 게시물 URL 전체 수집."""
     resp = _get(session, TARGET_URL)
     if not resp:
         logger.error("목록 페이지 요청 실패")
-        return None
+        return []
 
     soup = BeautifulSoup(resp.text, "html.parser")
-
-    # 게시물 링크 탐색: 제목에 키워드 포함된 <a> 태그
+    urls = []
     for a in soup.find_all("a", href=True):
-        title = a.get_text(strip=True)
-        if CAFETERIA_KEYWORD in title:
+        if CAFETERIA_KEYWORD in a.get_text(strip=True):
             href = a["href"]
-            if href.startswith("http"):
-                return href
-            return BASE_DOMAIN + href
+            url = href if href.startswith("http") else BASE_DOMAIN + href
+            if url not in urls:
+                urls.append(url)
 
-    logger.warning(f"'{CAFETERIA_KEYWORD}' 게시물을 찾을 수 없습니다.")
-    return None
+    if not urls:
+        logger.warning(f"'{CAFETERIA_KEYWORD}' 게시물을 찾을 수 없습니다.")
+    return urls
+
+
+def get_weekly_post_url(session: requests.Session) -> str | None:
+    """목록 페이지에서 운정교내식당 게시물 URL 추출 (첫 번째 매칭)."""
+    urls = _get_all_post_urls(session)
+    return urls[0] if urls else None
 
 
 _DATE_PATTERN = re.compile(r"(\d{1,2})월\s*(\d{1,2})일")
@@ -189,26 +194,26 @@ def get_menu_for_date(target_date: date) -> list[str] | None:
         return None
 
     session = _make_session()
-    post_url = get_weekly_post_url(session)
-    if not post_url:
+    post_urls = _get_all_post_urls(session)
+    if not post_urls:
         return None
 
     global _last_post_url
-    _last_post_url = post_url
     import cache as _cache
-    _cache.save_post_url_cache(post_url)
-    logger.info(f"게시물 URL: {post_url}")
     from crawler_graph import run_crawl_graph
-    weekly = run_crawl_graph(post_url, session, ref_year=target_date.year)
-    if not weekly:
-        return None
 
-    menu = weekly.get(target_date)
-    if menu is None:
-        logger.warning(
-            f"{target_date} 날짜가 게시물에 없음 "
-            f"(게시물 날짜: {sorted(weekly.keys())}). 이번 주 게시물 미게시 가능성."
-        )
-        return None
+    for post_url in post_urls:
+        logger.info(f"게시물 URL 시도: {post_url}")
+        _last_post_url = post_url
+        _cache.save_post_url_cache(post_url)
+        weekly = run_crawl_graph(post_url, session, ref_year=target_date.year)
+        if not weekly:
+            logger.info(f"{post_url} 파싱 실패, 다음 게시물 시도")
+            continue
+        menu = weekly.get(target_date)
+        if menu is not None:
+            return menu or None
+        logger.info(f"{post_url} 에서 {target_date} 미발견 (게시물 날짜: {sorted(weekly.keys())}), 다음 게시물 시도")
 
-    return menu or None
+    logger.warning(f"{target_date} 날짜 메뉴를 모든 게시물에서 찾지 못함. 이번 주 게시물 미게시 가능성.")
+    return None
